@@ -1,124 +1,204 @@
-Preston
+Project Grimlock  - Bringing JS to Android
 
-    (open `index.html` in Safari or Firefox to see this presentation.)
-    Hello all, welcome to the presentation. 
-    I am going to talk about a presentation tool called Preston.
+    welcome to the presentation. 
+    I am going to talk about using javascript for writing Android apps.
     
 Why?
 
-    Why did I write yet another presentation tool?
+    Why did I want to use javascript in Android.
     
-In Browser
-    
-    So, I have like for a long time the simplicity of running a presentation
-    inside of a web browser 
+The Problem:
+----
+Testing Android Appliances
 
-S5    
-    
-    and have been using a modified version of S5
-    that supported Markdown for a while.
-    
-Takahashi Style
+    So the last year I ahve been working on an Android app to make devices
+    into Interactive Digital Signage Appliances.
 
-    I tend to do presentations in the Takahashi style, where
-    most of the slides are simply a couple of words that are centered 
-    on the screen.
-    
-Problem
 
-    But the problem I run across is that I find I have to write out my
-    monologue and 
-    
-Memorization
-    
-    memorize it by practicing it over and over again.
-    
-Time Consuming
+Interactive Digital Signage Appliances ?
+----
+![example 1](interactive-signage-A1.jpg)
+![example 3](interactive-signage-C1.jpg)
 
-    This is very time consuming.
-    
-Notes!
+    So what are interactive digital signage appliances?
 
-    While practicing one day I had the idea that if you had your
-    notes in front of you, then you ***don't have to memorize***.
-    If you forget what to say, simply let your notes jug your memory
-    enough to keep going.
-    
-Preston
+Coming Soon...(4pm Today!)
 
-    The result is Preston.
-    
-File Format
+    If you want to know abit more about building appliances with android, please
+    come to my other talk this afternoon! :-)
 
-    The file format is inspired both by
-    
-Markdown
+Failure is not an option  
 
-    markdown
+<p style="font-size: medium;">-Book Title by Gene Krantz, NASA Flight Director</p>
     
-Pitchography
+    Now the thing with this kind of application is that its more like a website
+    than your typical mobile phone app in that its on public display pretty much
+    constantly. So you can't just assume that you can simply crash and the user
+    will restart your app.
+   
 
-    and a past Node Knockout entry called Pitchograph, which is a
-    presentation tool in its own right - a very awesome one, in fact.
-    
-<pre>Slide 1
-    
-    notes notes notes notes
-    notes notes notes
-    
-Slide 2
+![failwhale original](failwhale-1.jpg)
 
-    notes notes notes notes
+    On the otherhand...
+
+![](failwhale-A.jpg)
+
+    And lest your start laughing to loudly at our corporate operating system
+    friends...
+
+![](failwhale-B.jpg)
+
+    It happens to everyone.
+
+So we need stress testing
+
+    So what we need is the kind of stress testing we use for websites and other
+    long running applications, as things like slow memory leaks become problems.
+
+Nothing handy
+
+    But the existing Android testing framework was intended for doing unit and
+    intergration testing, not these kind of long running tests.
+
+Enter the Rhino
+
+![Mozilla Rhino Logo](MozRhino.jpg)
+
+    And thats where javascript comes in, because I thought it would be more
+    productive to write these tests in a lightwirght scripting language like 
+    javascript instead of bulky, pre-compiled Java.
+    
+Mozillas Rhino:
+---
+A Javascript Engine written in Java
+
+    So Rhino from Mozilla is a javascript engine, like the better known 
+    Spidermonkey and V8 that are in Firefox and Chrome, but Rhino is written in
+    Java and interfaces very nicely with Java libraries, making it a perfect fit
+    for use on Android.
+
+The code...
+
+    So what did the js code look like?
+    
+<pre>
+"use strict";
+
+var Intent = android.content.Intent;
+var Uri = android.net.Uri;
+
+var broadcastCounter = 0,
+    deviceID,
+    apiToken,
+    displayedUrl,
+    flipflopRunning = false,
+    URL_DISPLAY_ACTION = "au.com.sct.agent.URL_DISPLAYED",
+    DEVICE_REGISTERED_ACTION = "au.com.sct.agent.DEVICE_REGISTERED",
+    FLIP_FLOP_PERIOD = 5 * 60; //period between switching manifest
+
+console.info("Running Stress Test script...");
+logToServer(deviceID, "info", "Starting Stress Tests");
+broadcasts.on({
+    receive: function(bintent) {
+        var EXTRA_DEVICE_ID = "au.com.sct.agent.EXTRA_DEVICE_ID",
+        EXTRA_API_TOKEN = "au.com.sct.agent.EXTRA_API_TOKEN";
+        
+        console.info(broadcastCounter+"] Got broadcast intent: "+bintent);
+        broadcastCounter++;        
+        
+        switch (bintent.getAction()) {
+        case (URL_DISPLAY_ACTION) :
+            displayedUrl = bintent.getDataString();
+            console.info("Url DISPLAYED "+displayedUrl);
+            getManifest(deviceID, apiToken, 'x', function(err, res) {
+               var manifest, manifestUrl;
+               try {
+                   if (res.status === 200) {
+                       manifest = JSON.parse(JSON.parse(res.text).body);
+                       manifestUrl = manifest.home.source + "/" +manifest.home.start;
+                       if (manifestUrl === displayedUrl) {
+                           logToServer(deviceID, "info", "Displaying CORRECT Url "+displayedUrl);
+                       } else {
+                           logToServer(deviceID, "error", "Displaying INCORRECT Url "+ 
+                                   displayedUrl + 
+                                   " should have been "+manifestUrl);
 </pre>
 
-    So a Preston presentation looks like this. You start with the words
-    you want to put on a slide, then underneath it you indent the notes
-    for this slide.
-    
-Markdown
+    like this.
 
-    Both the content for the slides and the notes are run through Markdown,
-    so you can use
-    
-[Links](http://google.com)
-    
-    links
-    
-![Images](images.png)
+Best Laid Plans...
 
-    Images
+    Now while I did end up getting it work and it proved usual in finding a 
+    number of bugs due to long running tests, the results in using Javascript
+    instean of Java were not as I'd hoped for. I found it even more cumbersome
+    writing the tests in javascript and it didn't feel anymore productive.
     
-Markdown
+So what went wrong?
 
-    And anything else that Markdown provides.
+    So what went wrong?
+    The main problem was that I still needed to move js files to the emulator or
+    device. I was editing the files with my usual desktop text editor BUT there 
+    was none of the tool support I was used to with writing android code in Java 
+    using a IDE, like auto-completion to help with the using the huge Android 
+    API.
+    This got me thinking about why javascript was such a nice fit for the browser
+    and on the server with Nodejs, but not for Android?
     
-Code Blocks?
+Bánffy-Bray criteria
+----
+> 1. Static typing’s attractiveness is a direct function 
+>    (and dynamic typing’s an inverse function) of API surface size.
+> 2. Dynamic typing’s attractiveness is a direct function 
+>    (and static typing’s an inverse function) of unit testing workability.
 
-    Well, almost everything.
-    So, I did introduce a problem: I stole the indentation
-    syntax from Markdown which is normally used for code blocks.
-    So now you can't write code blocks in the Markdown way in your slides.
+    Luckily smarter people than I, namely Tim Bray, whose at Google these days,
+    has already noticed that using Java for Android was actually not too bad
+    and nothing like doing web development with Java and vice versa when it 
+    came to dynamic languages.
+    [Link](http://www.tbray.org/ongoing/When/201x/2011/12/27/Type-Systems)
+
+BUT On-Device Development ?
+
+    So there I left things until late last year when I began thinking about 
+    development on mobile, touch-screen based
+
+IDEs!
+
+    IDEs.
+
+![eclipse-screenshot](eclipse-example-1.png)
+
+    Most people use IDEs like Eclipse and Intellj for development. 
+
+![screen-sizes](screen-sizes.png)
+
+    Ok, people don't use 42in desktop monitor, but you get the idea.
+    This is not going to work!
+    img-src: https://developers.google.com/tv/android/docs/gtv_android_patterns
+
+Solutions?
+
+    So what can we do?
     
-&lt;pre&gt;
+Rethinking JS
 
-    The solution is to use the pre tag to wrap your code blocks. It's not great,
-    but it's the best I could think of and I think it's adequate. And it's still
-    valid markdown.
+    So we need to be able to edit JS on the device, ideally in some form of REPL
     
-Browser Support
+Tools
 
-    So, you'd expect this to work on all browsers, right?
-    
-✔Safari  
-✔Firebox
+    And we need better tooling to allow for quick, exploratory programming
+    workflow.
 
-    No. Right now Preston has only been tested succesfully on the latest Safari
-    and Firefox.
-    
-Chrome  
-- HTTP only
+Enter Rhinobot
 
-    Notably, it doesn't work on Chrome with local files, although it works if you
-    serves the files using HTTP
+    A better tool for using javascript on Andriod.
 
+
+Thank You!  
+blog.manichord.com  
+maks@manichord.com  
+github.com/maks  
+@mklin
+
+    Thank you!
     
