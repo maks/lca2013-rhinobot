@@ -88,6 +88,15 @@ function runSlides(slides){
     }, 500)
 }
 
+function startTimer() {
+    var mins = 20;
+    var t = new Timer(60 * mins, $('#timer'), $('#wrapper'));
+    t.play();
+    console.debug("started timer");
+}
+
+
+
 function resize(){
     var height = $(window).height()
     $('#layout').css({height: height + 'px'})
@@ -111,6 +120,7 @@ $(function(){
             $('#startBtn').click(function(){
                 slides = parsePreston(data)
                 runSlides(slides)
+                startTimer()
                 $('.begin').removeClass('begin')
                 $('#info').html('The slides are in a separate window. Use &larr; and &rarr; to flip slides')
                 resize()

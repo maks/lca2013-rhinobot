@@ -183,3 +183,8 @@ a{
 	font-family: Monaco, monospace;
 	padding: 0 40px;
 }
+
+#timer {
+	font-size: 3em;
+	color: blue;
+}

@@ -1,3 +1,6 @@
+![testpattern](tv-test-pattern-800.png)
+    Just the start page
+
 Project Grimlock  - Bringing JS to Android
 
     welcome to the presentation. 
@@ -64,9 +67,10 @@ Enter the Rhino
 
 ![Mozilla Rhino Logo](MozRhino.jpg)
 
-    And thats where javascript comes in, because I thought it would be more
-    productive to write these tests in a lightwirght scripting language like 
-    javascript instead of bulky, pre-compiled Java.
+    And thats where javascript comes into the picture.  
+    Because I thought it would be more productive to write these tests in a 
+    lightwirght scripting language like javascript instead of a bulky, 
+    pre-compiled language like Java.
     
 Mozillas Rhino:
 ---
@@ -195,6 +199,8 @@ Enter Rhinobot
 
 
 Thank You!  
+Questions?  
+
 blog.manichord.com  
 maks@manichord.com  
 github.com/maks  
