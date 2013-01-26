@@ -31,7 +31,7 @@ Interactive Digital Signage Appliances ?
 
 But Wait! Theres more...  
 ![](tim-shaw-wait-theres-more-1.jpg)  
-(@4pm Today!)
+(4pm Today)
 
     If you want to know abit more about building appliances with android, please
     come to my other talk this afternoon! :-)
@@ -86,9 +86,9 @@ A Javascript Engine written in Java
     Spidermonkey and V8 that are in Firefox and Chrome, but Rhino is written in
     Java and interfaces very nicely with Java libraries.
 
-![](jsdroid-tweet.jpg)
+![](jsdroid-tweet.png)
 
-    But what really made think of tryign to use javscript and rhino for android
+    But what really made think of trying to use javscript and rhino for android
     development was this tweet from Hannes Wallnöfer, one of the maintainers of
     the Rhino project.
 
@@ -289,7 +289,7 @@ What its like so far
     so far its only in a very basic state.
 
 Help  
-!()[UncleSamWantsYou.jpg]
+![](UncleSamWantsYou.jpg)
 http://github.com/maks/rhinobot
 
     So if you are interested in checking it out or even helping, just head over
